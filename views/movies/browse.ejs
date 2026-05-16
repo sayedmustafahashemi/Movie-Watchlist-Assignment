@@ -1,0 +1,134 @@
+<%- include('../partials/header') %>
+
+<div class="mb-8">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Browse Movies</h1>
+            <p class="text-gray-400 mt-1">Discover Hindi & Hollywood films from TMDB</p>
+        </div>
+        <a href="/movies" class="px-5 py-2.5 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition flex items-center gap-2 border border-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to My Collection
+        </a>
+    </div>
+    
+    <!-- Dark Search Bar -->
+    <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700 p-4 mb-8">
+        <form action="/movies/browse" method="GET" class="flex gap-3">
+            <input type="text" name="search" value="<%= search %>" 
+                   placeholder="Search for any movie..." 
+                   class="flex-1 px-5 py-3 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-500">
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg transition">
+                Search
+            </button>
+        </form>
+    </div>
+    
+    <!-- Dark Filter Tabs -->
+    <div class="flex gap-3 mb-8 border-b border-gray-800 pb-4">
+        <a href="/movies/browse?type=hollywood" class="px-6 py-2 rounded-xl font-semibold transition <%= type === 'hollywood' && !search ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700' %>">
+            🇺🇸 Hollywood
+        </a>
+        <a href="/movies/browse?type=hindi" class="px-6 py-2 rounded-xl font-semibold transition <%= type === 'hindi' && !search ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700' %>">
+            🇮🇳 Hindi Cinema
+        </a>
+    </div>
+    
+    <!-- Movie Grid -->
+    <% if (movies.length === 0) { %>
+        <div class="bg-gray-800/50 rounded-2xl p-12 text-center border border-gray-700">
+            <div class="text-6xl mb-4">🎬</div>
+            <h3 class="text-2xl font-bold text-gray-300 mb-2">No movies found</h3>
+            <p class="text-gray-400">Try searching for something else</p>
+        </div>
+    <% } else { %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <% movies.forEach(function(movie) { %>
+                <div class="group bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-700">
+                    <!-- Poster -->
+                    <div class="relative h-64 overflow-hidden bg-gray-900">
+                        <% if (movie.poster_path) { %>
+                            <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" 
+                                 alt="<%= movie.title %>"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <% } else { %>
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+                                <svg class="w-16 h-16 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4 5h16v2H4V5zm0 4h16v2H4V9zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/>
+                                </svg>
+                            </div>
+                        <% } %>
+                        <div class="absolute top-2 right-2 bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-yellow-400">
+                            ★ <%= (movie.vote_average || 0).toFixed(1) %>
+                        </div>
+                    </div>
+                    
+                    <!-- Info -->
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-200 text-lg mb-1 truncate"><%= movie.title %></h3>
+                        <p class="text-gray-400 text-sm mb-3">
+                            <%= movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A' %>
+                        </p>
+                        <p class="text-gray-400 text-xs line-clamp-2 mb-4">
+                            <%= movie.overview ? movie.overview.substring(0, 100) + '...' : 'No description available' %>
+                        </p>
+                        
+                        <!-- Dark Buttons -->
+                        <form action="/movies/add-from-api" method="POST" class="mt-2">
+                            <input type="hidden" name="tmdbId" value="<%= movie.id %>">
+                            <input type="hidden" name="title" value="<%= movie.title.replace(/'/g, "\\'") %>">
+                            <input type="hidden" name="releaseYear" value="<%= movie.release_date ? new Date(movie.release_date).getFullYear() : new Date().getFullYear() %>">
+                            <input type="hidden" name="rating" value="<%= (movie.vote_average || 7).toFixed(1) %>">
+                            <input type="hidden" name="posterPath" value="<%= movie.poster_path || '' %>">
+                            <input type="hidden" name="overview" value="<%= (movie.overview || '').replace(/'/g, "\\'") %>">
+                            
+                            <div class="flex gap-2">
+                                <button type="submit" name="watchStatus" value="planning" class="flex-1 px-3 py-2 bg-blue-600/20 text-blue-400 text-sm rounded-lg hover:bg-blue-600 hover:text-white transition font-medium border border-blue-600/30">
+                                    📋 Later
+                                </button>
+                                <button type="submit" name="watchStatus" value="watched" class="flex-1 px-3 py-2 bg-green-600/20 text-green-400 text-sm rounded-lg hover:bg-green-600 hover:text-white transition font-medium border border-green-600/30">
+                                    ✅ Watched
+                                </button>
+                                <button type="submit" name="watchStatus" value="favorite" class="flex-1 px-3 py-2 bg-yellow-600/20 text-yellow-400 text-sm rounded-lg hover:bg-yellow-600 hover:text-white transition font-medium border border-yellow-600/30">
+                                    ⭐ Fav
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        
+        <!-- Dark Pagination -->
+        <% if (totalPages > 1) { %>
+            <div class="flex justify-center gap-3 mt-12">
+                <% if (currentPage > 1) { %>
+                    <a href="<%= currentUrl %>?type=<%= type %>&search=<%= search %>&page=<%= currentPage - 1 %>" 
+                       class="px-5 py-2.5 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition border border-gray-700">
+                        ← Previous
+                    </a>
+                <% } %>
+                <span class="px-5 py-2.5 bg-purple-600 text-white rounded-xl">Page <%= currentPage %> of <%= totalPages %></span>
+                <% if (currentPage < totalPages) { %>
+                    <a href="<%= currentUrl %>?type=<%= type %>&search=<%= search %>&page=<%= currentPage + 1 %>" 
+                       class="px-5 py-2.5 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition border border-gray-700">
+                        Next →
+                    </a>
+                <% } %>
+            </div>
+        <% } %>
+    <% } %>
+</div>
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+        <div class="mb-6 text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-500 rounded-xl flex items-center justify-center mx-auto shadow-lg mb-4">
+                <span class="text-2xl">✏️</span>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800">Edit Movie</h1>
+            <p class="text-gray-500 mt-2">Update your movie details</p>
+        </div>
+        
+        <form action="/movies/<%= movie._id %>?_method=PUT" method="POST">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Movie Title *</label>
+                <input type="text" name="title" value="<%= movie.title %>" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Genre *</label>
+                <input type="text" name="genre" value="<%= movie.genre %>" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Release Year *</label>
+                <input type="number" name="releaseYear" value="<%= movie.releaseYear %>" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Rating (1-10) *</label>
+                <input type="number" name="rating" value="<%= movie.rating %>" min="1" max="10" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">Watch Status</label>
+                <select name="watchStatus" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <option value="planning" <%= movie.watchStatus === 'planning' ? 'selected' : '' %>>📋 Planning to watch</option>
+                    <option value="watched" <%= movie.watchStatus === 'watched' ? 'selected' : '' %>>✅ Watched</option>
+                    <option value="favorite" <%= movie.watchStatus === 'favorite' ? 'selected' : '' %>>⭐ Favorite</option>
+                </select>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg">
+                    Update Movie
+                </button>
+                <a href="/movies" class="flex-1 bg-gray-300 text-gray-700 text-center py-3 rounded-xl font-semibold hover:bg-gray-400 transition-all duration-200">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

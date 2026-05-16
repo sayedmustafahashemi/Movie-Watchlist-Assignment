@@ -1,0 +1,61 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+        <div class="mb-6 text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-500 rounded-xl flex items-center justify-center mx-auto shadow-lg mb-4">
+                <span class="text-2xl">🎬</span>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800">Add New Movie</h1>
+            <p class="text-gray-500 mt-2">Fill in the details below</p>
+        </div>
+        
+        <% if (error_msg) { %>
+            <div class="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg mb-6">
+                <%= error_msg %>
+            </div>
+        <% } %>
+        
+        <form action="/movies" method="POST">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Movie Title *</label>
+                <input type="text" name="title" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="e.g., Inception" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Genre *</label>
+                <input type="text" name="genre" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="e.g., Action, Drama, Comedy" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Release Year *</label>
+                <input type="number" name="releaseYear" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="e.g., 2010" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Rating (1-10) *</label>
+                <input type="number" name="rating" min="1" max="10" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="e.g., 8.5" required>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">Watch Status</label>
+                <select name="watchStatus" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <option value="planning">📋 Planning to watch</option>
+                    <option value="watched">✅ Watched</option>
+                    <option value="favorite">⭐ Favorite</option>
+                </select>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button type="submit" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg">
+                    Save Movie
+                </button>
+                <a href="/movies" class="flex-1 bg-gray-300 text-gray-700 text-center py-3 rounded-xl font-semibold hover:bg-gray-400 transition-all duration-200">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
